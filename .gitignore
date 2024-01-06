@@ -1,1 +1,4 @@
-./env.ini
+./config.ini
+./backups
+./WinSCP
+./WinSCP.log
