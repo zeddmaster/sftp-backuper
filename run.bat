@@ -3,6 +3,7 @@
 goto :main
 
 
+rem Main executable method 
 :main
     call :parseConfigs
     call :prepareFolder
@@ -11,6 +12,7 @@ goto :eof
 
 
 
+rem Parse ini file
 :parseConfigs
 
     if not exist config.ini exit \b "Please, create config.ini file"
@@ -19,13 +21,12 @@ goto :eof
         if %%a==host set host=%%b
         if %%a==hostUser set hostUser=%%b
         if %%a==password set password=%%b
-        if %%a==hostkey set hostkey=%%b
     )
 goto :eof
     
     
     
-    
+rem Prepare folder structure
 :prepareFolder
     set backupFolder=.\backups\
     
@@ -42,22 +43,24 @@ goto :eof
 goto :eof
     
 
+rem Run backuping with WinSCP
 :runBackup
     echo %backupPath%
     rem exit /b
     ".\WinSCP\WinSCP.com" ^
-      /log="WinSCP.log" /ini=nul ^
+      /ini=nul ^
       /command ^
         "option echo off" ^
         "option batch on" ^
         "option confirm off" ^
         "open sftp://%hostUser%:%password%@%host%/ -hostkey=*" ^
         "lcd %backupPath%" ^
-        "get MasterWorld*" ^
-        "get plugins" ^
-        "get *.json" ^
-        "get *.yml" ^
-        "get server.properties" ^
+        "get *"
+        :: "get MasterWorld*" ^
+        :: "get plugins" ^
+        :: "get *.json" ^
+        :: "get *.yml" ^
+        :: "get server.properties" ^
         "exit"
 
 
@@ -68,5 +71,4 @@ goto :eof
       echo Error
     )
 
-    exit /b %WINSCP_RESULT%
 goto :eof
